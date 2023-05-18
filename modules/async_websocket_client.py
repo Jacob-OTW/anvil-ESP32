@@ -91,7 +91,7 @@ class AsyncWebsocketClient:
         self.sock.setblocking(False)
         if self.uri.secure:
             import ssl
-            self.sock = ssl.wrap_socket(self.sock, server_hostname=self.uri.host, cert_reqs=ssl.CERT_REQUIRED, ca_certs=ca_certs)
+            self.sock = ssl.wrap_socket(self.sock, server_hostname=self.uri.host)
 
         await self.close()
 

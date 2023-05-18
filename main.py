@@ -1,6 +1,8 @@
-import anvil.pico
+import modules.anvil.esp32 as anvil
 import uasyncio as a
-from machine import Pin
+import time
+import machine
+import network
 
 # This is an example Anvil Uplink script for the Pico W.
 # See https://anvil.works/pico for more information
@@ -8,15 +10,15 @@ from machine import Pin
 UPLINK_KEY = "<uplink_key_goes_here>"
 
 # We use the LED to indicate server calls and responses.
-led = Pin("LED", Pin.OUT, value=1)
+led = machine.Pin(2, machine.Pin.OUT, value=1)
 
 
 # Call this function from your Anvil app:
 #
 #    anvil.server.call('pico_fn', 42)
 #
-
-@anvil.pico.callable(is_async=True)
+        
+@anvil.callable(is_async=True)
 async def pico_fn(n):
     # Output will go to the Pico W serial port
     print(f"Called local function with argument: {n}")
@@ -29,7 +31,7 @@ async def pico_fn(n):
 
 # Connect the Anvil Uplink. In MicroPython, this call will block forever.
 
-anvil.pico.connect(UPLINK_KEY)
+anvil.connect(UPLINK_KEY)
 
 
 # There's lots more you can do with Anvil on your Pico W.

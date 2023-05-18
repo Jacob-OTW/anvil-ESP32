@@ -1,5 +1,5 @@
-from async_websocket_client import AsyncWebsocketClient
-from ca_certs import LETSENCRYPT_ROOT
+from modules.async_websocket_client import AsyncWebsocketClient
+from modules.ca_certs import LETSENCRYPT_ROOT
 import uasyncio as a
 import time
 import json
@@ -105,9 +105,6 @@ class FatalException(Exception):
     pass
 
 async def _connect(key, url):
-    if time.time() < NOT_BEFORE:
-        raise FatalException("System time invalid. Not connecting to Anvil.")
-
     print("Connecting to Anvil...")
     await ws.handshake(url, ca_certs=LETSENCRYPT_ROOT)
     print("Connected")
@@ -137,7 +134,7 @@ async def _blink_led(led, interval, n=None):
             i += 1
             if i > n:
                 break
-        led.toggle()
+        led.value(not bool(led.value()))
         await a.sleep_ms(interval)
     led.on()
 
@@ -145,7 +142,7 @@ async def _connect_async(key, on_first_connect, on_every_connect, url, no_led):
     global _stay_connected
     _stay_connected = True
     if not no_led:
-        led = Pin("LED", Pin.OUT, value=1)
+        led = Pin(2, Pin.OUT, value=1)
     while _stay_connected:
         try:
             blink_task = None
